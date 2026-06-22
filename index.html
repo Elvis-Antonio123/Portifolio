@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elvis Chato — Frontend Developer</title>
+<meta name="description" content="Portfólio de Elvis António Salomão Chato, desenvolvedor Front-end em Nacala-Porto, Moçambique.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0b0f17;
+  --bg-soft:#0d1117;
+  --surface:#161b22;
+  --surface-2:#1c2330;
+  --border:#2a3140;
+  --text:#e6edf3;
+  --muted:#8b949e;
+  --accent:#58a6ff;
+  --accent-dim:#1f6feb;
+  --green:#7ee787;
+  --amber:#f0b429;
+  --radius:14px;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --display:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(88,166,255,.10), transparent),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(240,180,41,.05), transparent),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+html{overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+::selection{background:var(--accent-dim);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 clamp(16px,5vw,24px)}
+
+/* ===== EDITOR-STYLE HEADER ===== */
+.editor-bar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(11,15,23,.85);
+  backdrop-filter:blur(10px) saturate(140%);
+  border-bottom:1px solid var(--border);
+}
+.editor-top{
+  display:flex;align-items:center;gap:10px;
+  max-width:1080px;margin:0 auto;padding:0 clamp(14px,4vw,24px);height:52px;
+}
+.dots{display:flex;gap:7px;flex-shrink:0}
+.dots span{width:11px;height:11px;border-radius:50%;display:block}
+.dots .r{background:#ff5f56}
+.dots .y{background:#ffbd2e}
+.dots .g{background:#27c93f}
+.brand-tag{
+  font-family:var(--mono);font-size:.8rem;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-width:0;
+}
+.brand-tag b{color:var(--accent);font-weight:600}
+
+.tabs{
+  display:flex;align-items:center;gap:2px;overflow-x:auto;flex:1;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  font-family:var(--mono);font-size:.82rem;color:var(--muted);
+  padding:14px 16px 12px;white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:.18s ease;flex-shrink:0;
+}
+.tab:hover{color:var(--text)}
+.tab.is-active{color:var(--text);border-bottom-color:var(--accent)}
+.tab .ext{color:var(--muted);opacity:.6}
+
+.menu-btn{
+  display:none;background:none;border:1px solid var(--border);
+  color:var(--text);width:38px;height:38px;border-radius:8px;
+  cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+.drawer-backdrop{
+  position:fixed;inset:0;background:rgba(3,5,10,.6);
+  opacity:0;visibility:hidden;transition:opacity .25s ease;
+  z-index:250;
+}
+.drawer-backdrop.open{opacity:1;visibility:visible}
+
+.mob-panel{
+  position:fixed;top:0;left:0;height:100vh;width:80%;max-width:300px;
+  background:var(--bg-soft);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transform:translateX(-104%);transition:transform .3s ease;
+  z-index:300;overflow-y:auto;
+  box-shadow:24px 0 60px rgba(0,0,0,.45);
+}
+.mob-panel.open{transform:translateX(0)}
+.mob-panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;height:52px;flex-shrink:0;
+  border-bottom:1px solid var(--border);
+}
+.drawer-close{
+  background:none;border:1px solid var(--border);color:var(--text);
+  width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.mob-panel a{
+  font-family:var(--mono);font-size:.95rem;color:var(--muted);
+  padding:15px 22px;border-top:1px solid var(--border);
+}
+.mob-panel a.is-active{color:var(--accent)}
+
+@media (max-width:760px){
+  .tabs{display:none}
+  .menu-btn{display:flex}
+}
+
+/* ===== STATUS PILL ===== */
+.status-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.78rem;color:var(--green);
+  background:rgba(126,231,135,.08);border:1px solid rgba(126,231,135,.25);
+  padding:6px 14px;border-radius:30px;
+}
+.status-pill .dot{
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 0 0 rgba(126,231,135,.6);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(126,231,135,.55)}
+  70%{box-shadow:0 0 0 8px rgba(126,231,135,0)}
+  100%{box-shadow:0 0 0 0 rgba(126,231,135,0)}
+}
+
+/* ===== TYPE ===== */
+.eyebrow{
+  font-family:var(--mono);font-size:.8rem;color:var(--accent);
+  letter-spacing:.04em;
+}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.01em}
+.page-title{font-size:clamp(1.85rem,5.5vw,2.6rem);margin:.5rem 0 1rem;line-height:1.15}
+.page-lede{color:var(--muted);font-size:1.05rem;max-width:600px;line-height:1.6}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.88rem;font-weight:500;
+  padding:13px 24px;border-radius:9px;border:1px solid transparent;
+  cursor:pointer;transition:.2s ease;
+}
+.btn-primary{background:var(--accent);color:#06101d}
+.btn-primary:hover{background:#74b6ff;transform:translateY(-2px)}
+.btn-ghost{border-color:var(--border);color:var(--text);background:transparent}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+
+/* ===== FOOTER ===== */
+.site-footer{
+  border-top:1px solid var(--border);padding:36px 0;margin-top:80px;
+}
+.site-footer .wrap{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;
+}
+.site-footer p{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.footer-social{display:flex;gap:16px}
+.footer-social a{color:var(--muted);font-family:var(--mono);font-size:.82rem;transition:.2s}
+.footer-social a:hover{color:var(--accent)}
+
+main{padding-top:56px;padding-bottom:40px}
+
+@media (max-width:560px){
+  .page-title{font-size:1.95rem}
+}
+
+
+/* ---- página: início ---- */
+.hero{padding:64px 0 30px}
+.hero-grid{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center;
+}
+.hero h1{font-size:clamp(1.85rem,5.5vw,2.85rem);line-height:1.15;margin:14px 0 18px}
+.hero h1 .accent{color:var(--accent)}
+.hero p.lede{color:var(--muted);font-size:1.05rem;max-width:480px;margin-bottom:30px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px}
+
+.meta-row{display:flex;gap:26px;flex-wrap:wrap;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.meta-row span{display:flex;align-items:center;gap:7px}
+.meta-row .ic{color:var(--accent)}
+
+/* editor window (signature) */
+.editor-window{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 30px 70px rgba(0,0,0,.45);
+}
+.editor-window .winbar{
+  display:flex;align-items:center;gap:8px;padding:12px 16px;
+  border-bottom:1px solid var(--border);background:var(--surface-2);
+}
+.editor-window .winbar .fname{
+  margin-left:8px;font-family:var(--mono);font-size:.78rem;color:var(--muted);
+}
+.editor-body{padding:22px 22px 26px;font-family:var(--mono);font-size:.87rem;overflow-x:auto;}
+.editor-body .ln{display:flex;gap:16px;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+.editor-body .num{color:#4d5566;width:16px;text-align:right;flex-shrink:0;user-select:none}
+.editor-body .kw{color:#ff7b72}
+.editor-body .fn{color:#d2a8ff}
+.editor-body .str{color:var(--green)}
+.editor-body .prop{color:var(--accent)}
+.editor-body .com{color:#4d5566}
+.editor-body .cursor{
+  display:inline-block;width:7px;height:1.05em;background:var(--accent);
+  margin-left:2px;vertical-align:text-bottom;animation:blink 1s step-end infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+/* quick about strip */
+.intro-strip{padding:70px 0;border-top:1px solid var(--border)}
+.intro-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:48px;align-items:start}
+.intro-grid h2{font-size:1.7rem;margin-bottom:6px}
+.intro-grid p{color:var(--muted)}
+.photo-card{
+  display:flex;gap:20px;align-items:center;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius);padding:20px;
+  flex-wrap:wrap;
+}
+.photo-card img{
+  width:84px;height:84px;border-radius:12px;object-fit:cover;
+  border:2px solid var(--accent-dim);flex-shrink:0;
+}
+.photo-card .nm{font-family:var(--display);font-weight:600;font-size:1.05rem}
+.photo-card .rl{font-family:var(--mono);font-size:.78rem;color:var(--accent);margin-top:3px}
+
+/* socials row — agora em ícones */
+.social-row{display:flex;gap:12px;margin-top:20px}
+.social-row a{
+  width:44px;height:44px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);color:var(--muted);
+  transition:.2s ease;flex-shrink:0;
+}
+.social-row a svg{width:19px;height:19px;fill:currentColor}
+.social-row a:hover{
+  color:var(--accent);border-color:var(--accent);
+  transform:translateY(-3px);
+  box-shadow:0 10px 22px rgba(88,166,255,.18);
+}
+
+/* passatempos: ver hobbies.html */
+
+@media (max-width:860px){
+  .hero-grid,.intro-grid{grid-template-columns:1fr}
+  .hero{padding-top:38px}
+}
+@media (max-width:560px){
+  .hero{padding:24px 0 10px}
+  .hero-grid{gap:30px}
+  .hero-actions{flex-direction:column;align-items:stretch;margin-bottom:24px}
+  .hero-actions .btn{justify-content:center}
+  .meta-row{gap:14px;row-gap:8px}
+  .editor-body{font-size:.78rem;padding:18px 16px 22px}
+  .editor-body .num{width:14px}
+  .photo-card{padding:18px;justify-content:center;text-align:center}
+  .photo-card img{margin:0 auto}
+  .intro-strip{padding:50px 0}
+}
+</style>
+</head>
+<body>
+
+<header class="editor-bar">
+  <div class="editor-top">
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
+    <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+    <span class="brand-tag"><b>elvis</b>@portfolio:~$</span>
+    <nav class="tabs">
+      <a href="index.html" class="tab is-active">início<span class="ext">.html</span></a>
+      <a href="sobre.html" class="tab">sobre<span class="ext">.html</span></a>
+      <a href="habilidades.html" class="tab">habilidades<span class="ext">.html</span></a>
+      <a href="projetos.html" class="tab">projetos<span class="ext">.html</span></a>
+      <a href="hobbies.html" class="tab">hobbies<span class="ext">.html</span></a>
+      <a href="contato.html" class="tab">contato<span class="ext">.html</span></a>
+    </nav>
+  </div>
+</header>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="mob-panel" id="mobPanel">
+  <div class="mob-panel-head">
+    <span class="brand-tag"><b>elvis</b>@portfolio:~$</span>
+    <button class="drawer-close" id="drawerClose" aria-label="Fechar menu">✕</button>
+  </div>
+  <a href="index.html" class="is-active">início.html</a>
+    <a href="sobre.html">sobre.html</a>
+    <a href="habilidades.html">habilidades.html</a>
+    <a href="projetos.html">projetos.html</a>
+    <a href="hobbies.html">hobbies.html</a>
+    <a href="contato.html">contato.html</a>
+</aside>
+
+<main>
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="status-pill"><span class="dot"></span>disponível para projectos</span>
+        <h1>Construo interfaces que <span class="accent">funcionam bem</span> e parecem certas.</h1>
+        <p class="lede">Sou Elvis António Salomão Chato, desenvolvedor Front-end em Nacala-Porto. Transformo ideias em interfaces rápidas, limpas e acessíveis — com HTML, CSS e JavaScript no centro de tudo.</p>
+        <div class="hero-actions">
+          <a href="projetos.html" class="btn btn-primary">Ver projectos →</a>
+          <a href="contato.html" class="btn btn-ghost">Falar comigo</a>
+        </div>
+        <div class="meta-row">
+          <span><span class="ic">◆</span> Nacala-Porto, Moçambique</span>
+          <span><span class="ic">◆</span> 18 anos</span>
+          <span><span class="ic">◆</span> Front-end Developer</span>
+        </div>
+      </div>
+
+      <div class="editor-window">
+        <div class="winbar">
+          <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+          <span class="fname">developer.js</span>
+        </div>
+        <div class="editor-body" id="codeBlock"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="intro-strip wrap">
+    <div class="intro-grid">
+      <div>
+        <span class="eyebrow">// sobre</span>
+        <h2>Quem está a escrever este código</h2>
+        <p>Apaixonado por criar interfaces limpas, rápidas e acessíveis. Sempre à procura do próximo desafio técnico.</p>
+        <div class="social-row">
+          <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+            <img src="github_transparent.gif">
+          </a>
+          <a href="https://wa.me/258863093729" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
+            <img src="whatsapp_transparent.gif">
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+            <img src="instagram_transparent.gif">
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook">
+            <img src="Facebook.gif">
+          </a>
+        </div>
+      </div>
+      <div class="photo-card">
+        <img src="Elvis.png" alt="Elvis António Salomão Chato">
+        <div>
+          <div class="nm">Elvis António Salomão Chato</div>
+          <div class="rl">Front-end Developer</div>
+          <p style="color:var(--muted);font-size:.9rem;margin-top:10px;max-width:340px">
+            Trabalho principalmente com HTML, CSS e JavaScript, sempre em busca de projectos desafiadores para crescer tecnicamente.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© 2026 Elvis António Salomão Chato — Nacala-Porto, MZ</p>
+    <div class="footer-social">
+      <a href="https://wa.me/258863093729" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="mailto:elvesantonio123@gmail.com">Email</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // menu mobile
+  const menuBtn = document.getElementById('menuBtn');
+  const mobPanel = document.getElementById('mobPanel');
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  const drawerClose = document.getElementById('drawerClose');
+
+  function openDrawer(){
+    mobPanel.classList.add('open');
+    drawerBackdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer(){
+    mobPanel.classList.remove('open');
+    drawerBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  if(menuBtn){ menuBtn.addEventListener('click', openDrawer); }
+  if(drawerBackdrop){ drawerBackdrop.addEventListener('click', closeDrawer); }
+  if(drawerClose){ drawerClose.addEventListener('click', closeDrawer); }
+
+  // typewriter do bloco de código
+  const lines = [
+    {n:'01', html:'<span class="kw">const</span> <span class="prop">dev</span> = {'},
+    {n:'02', html:'&nbsp;&nbsp;<span class="prop">name</span>: <span class="str">"Elvis Chato"</span>,'},
+    {n:'03', html:'&nbsp;&nbsp;<span class="prop">role</span>: <span class="str">"Frontend Developer"</span>,'},
+    {n:'04', html:'&nbsp;&nbsp;<span class="prop">base</span>: <span class="str">"Nacala-Porto, MZ"</span>,'},
+    {n:'05', html:'&nbsp;&nbsp;<span class="prop">stack</span>: [<span class="str">"HTML"</span>, <span class="str">"CSS"</span>, <span class="str">"JS"</span>],'},
+    {n:'06', html:'&nbsp;&nbsp;<span class="prop">status</span>: <span class="str">"open_to_work"</span>'},
+    {n:'07', html:'};'},
+    {n:'08', html:''},
+    {n:'09', html:'<span class="fn">render</span>(dev); <span class="com">// vamos construir algo</span>'},
+  ];
+
+  const container = document.getElementById('codeBlock');
+  let li = 0;
+
+  function typeLine(){
+    if(li >= lines.length){
+      const cur = document.createElement('span');
+      cur.className = 'cursor';
+      container.appendChild(cur);
+      return;
+    }
+    const row = document.createElement('div');
+    row.className = 'ln';
+    const num = document.createElement('span');
+    num.className = 'num';
+    num.textContent = lines[li].n;
+    const txt = document.createElement('span');
+    row.appendChild(num);
+    row.appendChild(txt);
+    container.appendChild(row);
+
+    const full = lines[li].html;
+    let i = 0;
+    const speed = full.length === 0 ? 0 : 6;
+    function step(){
+      // reveal in chunks to keep tags intact (simplify: just set incrementally by char count via temp div)
+      i += 3;
+      txt.innerHTML = full.length ? full.slice(0, i) : '';
+      if(i < full.length){
+        setTimeout(step, 8);
+      } else {
+        txt.innerHTML = full;
+        li++;
+        setTimeout(typeLine, 90);
+      }
+    }
+    if(full.length === 0){ li++; setTimeout(typeLine, 90); }
+    else step();
+  }
+
+  if(container) typeLine();
+</script>
+</body>
+</html>
