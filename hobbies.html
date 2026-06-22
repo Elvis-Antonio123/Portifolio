@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passatempos — Elvis Chato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0b0f17;
+  --bg-soft:#0d1117;
+  --surface:#161b22;
+  --surface-2:#1c2330;
+  --border:#2a3140;
+  --text:#e6edf3;
+  --muted:#8b949e;
+  --accent:#58a6ff;
+  --accent-dim:#1f6feb;
+  --green:#7ee787;
+  --amber:#f0b429;
+  --radius:14px;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --display:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(88,166,255,.10), transparent),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(240,180,41,.05), transparent),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+html{overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+::selection{background:var(--accent-dim);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 clamp(16px,5vw,24px)}
+
+/* ===== EDITOR-STYLE HEADER ===== */
+.editor-bar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(11,15,23,.85);
+  backdrop-filter:blur(10px) saturate(140%);
+  border-bottom:1px solid var(--border);
+}
+.editor-top{
+  display:flex;align-items:center;gap:10px;
+  max-width:1080px;margin:0 auto;padding:0 clamp(14px,4vw,24px);height:52px;
+}
+.dots{display:flex;gap:7px;flex-shrink:0}
+.dots span{width:11px;height:11px;border-radius:50%;display:block}
+.dots .r{background:#ff5f56}
+.dots .y{background:#ffbd2e}
+.dots .g{background:#27c93f}
+.brand-tag{
+  font-family:var(--mono);font-size:.8rem;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-width:0;
+}
+.brand-tag b{color:var(--accent);font-weight:600}
+
+.tabs{
+  display:flex;align-items:center;gap:2px;overflow-x:auto;flex:1;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  font-family:var(--mono);font-size:.82rem;color:var(--muted);
+  padding:14px 16px 12px;white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:.18s ease;flex-shrink:0;
+}
+.tab:hover{color:var(--text)}
+.tab.is-active{color:var(--text);border-bottom-color:var(--accent)}
+.tab .ext{color:var(--muted);opacity:.6}
+
+.menu-btn{
+  display:none;background:none;border:1px solid var(--border);
+  color:var(--text);width:38px;height:38px;border-radius:8px;
+  cursor:pointer;font-size:1.1rem;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+
+.drawer-backdrop{
+  position:fixed;inset:0;background:rgba(3,5,10,.6);
+  opacity:0;visibility:hidden;transition:opacity .25s ease;
+  z-index:250;
+}
+.drawer-backdrop.open{opacity:1;visibility:visible}
+
+.mob-panel{
+  position:fixed;top:0;left:0;height:100vh;width:80%;max-width:300px;
+  background:var(--bg-soft);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transform:translateX(-104%);transition:transform .3s ease;
+  z-index:300;overflow-y:auto;
+  box-shadow:24px 0 60px rgba(0,0,0,.45);
+}
+.mob-panel.open{transform:translateX(0)}
+.mob-panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;height:52px;flex-shrink:0;
+  border-bottom:1px solid var(--border);
+}
+.drawer-close{
+  background:none;border:1px solid var(--border);color:var(--text);
+  width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.mob-panel a{
+  font-family:var(--mono);font-size:.95rem;color:var(--muted);
+  padding:15px 22px;border-top:1px solid var(--border);
+}
+.mob-panel a.is-active{color:var(--accent)}
+
+@media (max-width:760px){
+  .tabs{display:none}
+  .menu-btn{display:flex}
+}
+
+/* ===== STATUS PILL ===== */
+.status-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.78rem;color:var(--green);
+  background:rgba(126,231,135,.08);border:1px solid rgba(126,231,135,.25);
+  padding:6px 14px;border-radius:30px;
+}
+.status-pill .dot{
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 0 0 rgba(126,231,135,.6);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(126,231,135,.55)}
+  70%{box-shadow:0 0 0 8px rgba(126,231,135,0)}
+  100%{box-shadow:0 0 0 0 rgba(126,231,135,0)}
+}
+
+/* ===== TYPE ===== */
+.eyebrow{
+  font-family:var(--mono);font-size:.8rem;color:var(--accent);
+  letter-spacing:.04em;
+}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.01em}
+.page-title{font-size:clamp(1.85rem,5.5vw,2.6rem);margin:.5rem 0 1rem;line-height:1.15}
+.page-lede{color:var(--muted);font-size:1.05rem;max-width:600px;line-height:1.6}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.88rem;font-weight:500;
+  padding:13px 24px;border-radius:9px;border:1px solid transparent;
+  cursor:pointer;transition:.2s ease;
+}
+.btn-primary{background:var(--accent);color:#06101d}
+.btn-primary:hover{background:#74b6ff;transform:translateY(-2px)}
+.btn-ghost{border-color:var(--border);color:var(--text);background:transparent}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+
+/* ===== FOOTER ===== */
+.site-footer{
+  border-top:1px solid var(--border);padding:36px 0;margin-top:80px;
+}
+.site-footer .wrap{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;
+}
+.site-footer p{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.footer-social{display:flex;gap:16px}
+.footer-social a{color:var(--muted);font-family:var(--mono);font-size:.82rem;transition:.2s}
+.footer-social a:hover{color:var(--accent)}
+
+main{padding-top:56px;padding-bottom:40px}
+
+@media (max-width:560px){
+  .page-title{font-size:1.95rem}
+}
+
+
+/* ---- página: passatempos ---- */
+.hobbies-hero{padding:50px 0 10px}
+
+.hobby-grid{
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(min(300px,100%),1fr));
+  gap:24px;margin-top:44px;
+}
+.hobby-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px;transition:.25s ease;
+}
+.hobby-card:hover{
+  transform:translateY(-6px);border-color:var(--accent-dim);
+  box-shadow:0 22px 44px rgba(88,166,255,.14);
+}
+.hobby-card .hi{
+  width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:rgba(88,166,255,.10);color:var(--accent);margin-bottom:18px;font-size:1.35rem;
+}
+.hobby-card h3{font-size:1.15rem;margin-bottom:10px}
+.hobby-card p{color:var(--muted);font-size:.92rem;line-height:1.7}
+
+.hobby-card.wide{grid-column:1 / -1}
+
+.game-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.game-chips span{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.8rem;color:var(--text);
+  border:1px solid var(--border);padding:9px 16px;border-radius:30px;
+  background:var(--bg-soft);transition:.2s;
+}
+.game-chips span:hover{border-color:var(--accent);color:var(--accent)}
+.game-chips span i{color:var(--accent);font-size:.78rem}
+
+/* destaques com "imagem" + nome por baixo */
+.highlight-grid{
+  display:grid;grid-template-columns:repeat(auto-fill, minmax(128px,1fr));
+  gap:16px;margin-top:22px;
+}
+.highlight-item{display:flex;flex-direction:column;gap:9px}
+.highlight-art{
+  aspect-ratio:3/4;border-radius:11px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);position:relative;
+  font-size:1.9rem;color:rgba(255,255,255,.92);
+}
+.highlight-art img{width:100%;height:100%;object-fit:cover;display:block}
+.highlight-name{
+  font-family:var(--mono);font-size:.76rem;color:var(--muted);
+  text-align:center;line-height:1.4;
+}
+
+/* paletas dos destaques (arte original, sem usar artwork licenciado) */
+.hl-rdr2{background:linear-gradient(160deg,#5a3a1e,#1c120a)}
+.hl-acbf{background:linear-gradient(160deg,#0d3b3e,#06181a)}
+.hl-ff{background:linear-gradient(160deg,#7a1f1f,#1c0707)}
+.hl-gtav{background:linear-gradient(160deg,#3a2a5e,#100a1c)}
+.hl-fifa{background:linear-gradient(160deg,#1f5e2a,#07140a)}
+.hl-codm{background:linear-gradient(160deg,#2a2f3a,#0a0c10)}
+
+/* curiosidades — fact tiles */
+.fact-tiles{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px,1fr));gap:14px;margin-top:20px}
+.fact-tile{
+  display:flex;gap:14px;align-items:flex-start;
+  background:var(--bg-soft);border:1px solid var(--border);border-radius:11px;padding:16px;
+}
+.fact-tile .fi{
+  width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  background:rgba(88,166,255,.10);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;
+}
+.fact-tile p{color:var(--text);font-size:.85rem;line-height:1.55}
+
+/* chips genéricos (géneros, etc.) */
+.tag-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.tag-row span{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.8rem;color:var(--text);
+  border:1px solid var(--border);padding:9px 16px;border-radius:30px;
+  background:var(--bg-soft);transition:.2s;
+}
+.tag-row span:hover{border-color:var(--accent);color:var(--accent)}
+.tag-row span i{color:var(--accent);font-size:.78rem}
+
+.exclude-note{
+  font-family:var(--mono);font-size:.76rem;color:#f0867f;
+  margin-top:14px;display:flex;align-items:center;gap:7px;
+}
+
+/* badge tipo "NOVO" / "TOP" dentro do destaque */
+.mini-badge{
+  position:absolute;top:7px;right:7px;
+  font-family:var(--mono);font-size:.6rem;font-weight:700;color:#06101d;
+  background:var(--accent);padding:3px 7px;border-radius:20px;letter-spacing:.02em;
+}
+
+.hobby-card .link-out{
+  display:inline-flex;align-items:center;gap:6px;margin-top:18px;
+  font-family:var(--mono);font-size:.8rem;color:var(--accent);
+}
+
+@media (max-width:480px){
+  .hobby-card{padding:20px}
+  .highlight-grid{grid-template-columns:repeat(auto-fill, minmax(100px,1fr));gap:12px}
+  .highlight-name{font-size:.7rem}
+  .fact-tiles{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="editor-bar">
+  <div class="editor-top">
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
+    <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+    <span class="brand-tag"><b>elvis</b>@portfolio:~$</span>
+    <nav class="tabs">
+      <a href="index.html" class="tab">início<span class="ext">.html</span></a>
+      <a href="sobre.html" class="tab">sobre<span class="ext">.html</span></a>
+      <a href="habilidades.html" class="tab">habilidades<span class="ext">.html</span></a>
+      <a href="projetos.html" class="tab">projetos<span class="ext">.html</span></a>
+      <a href="hobbies.html" class="tab is-active">hobbies<span class="ext">.html</span></a>
+      <a href="contato.html" class="tab">contato<span class="ext">.html</span></a>
+    </nav>
+  </div>
+</header>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="mob-panel" id="mobPanel">
+  <div class="mob-panel-head">
+    <span class="brand-tag"><b>elvis</b>@portfolio:~$</span>
+    <button class="drawer-close" id="drawerClose" aria-label="Fechar menu">✕</button>
+  </div>
+  <a href="index.html">início.html</a>
+    <a href="sobre.html">sobre.html</a>
+    <a href="habilidades.html">habilidades.html</a>
+    <a href="projetos.html">projetos.html</a>
+    <a href="hobbies.html" class="is-active">hobbies.html</a>
+    <a href="contato.html">contato.html</a>
+</aside>
+
+<main>
+  <section class="hobbies-hero wrap">
+    <span class="eyebrow">// hobbies.html</span>
+    <h1 class="page-title">Fora do código</h1>
+    <p class="page-lede">O que ocupa o meu tempo quando não estou a programar.</p>
+
+    <div class="hobby-grid">
+
+      <!-- Futebol -->
+      <div class="hobby-card">
+        <div class="hi"><i class="fas fa-futbol"></i></div>
+        <h3>Futebol</h3>
+        <p>Acompanho jogos sempre que posso — é a forma perfeita de desligar do código e curtir com amigos.</p>
+      </div>
+
+      <!-- Música -->
+      <div class="hobby-card">
+        <div class="hi"><i class="fas fa-headphones"></i></div>
+        <h3>Música</h3>
+        <p>Ouvir música ajuda-me a manter o foco enquanto programo, e também a relaxar nos tempos livres.</p>
+      </div>
+
+      <!-- Curiosidade Científica -->
+      <div class="hobby-card wide">
+        <div class="hi"><i class="fas fa-flask"></i></div>
+        <h3>Curiosidade por Ciência</h3>
+        <p>Gosto de ler e aprender sobre ciência em geral — desde tecnologia e espaço até descobertas do dia a dia. Aqui vão algumas curiosidades que me marcaram:</p>
+        <div class="fact-tiles">
+          <div class="fact-tile">
+            <div class="fi"><i class="fas fa-globe"></i></div>
+            <p>Um dia em Vénus é mais longo do que um ano em Vénus.</p>
+          </div>
+          <div class="fact-tile">
+            <div class="fi"><i class="fas fa-water"></i></div>
+            <p>Os polvos têm três corações e sangue azul.</p>
+          </div>
+          <div class="fact-tile">
+            <div class="fi"><i class="fas fa-brain"></i></div>
+            <p>O cérebro humano gera energia suficiente para acender uma pequena lâmpada LED.</p>
+          </div>
+          <div class="fact-tile">
+            <div class="fi"><i class="fas fa-atom"></i></div>
+            <p>Quase toda a matéria visível do universo existe no estado de plasma.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calistenia -->
+      <div class="hobby-card wide">
+        <div class="hi"><i class="fas fa-dumbbell"></i></div>
+        <h3>Exercício Físico &amp; Calistenia</h3>
+        <p>Treino o corpo da mesma forma que treino a lógica — com consistência. A calistenia é o meu foco principal.</p>
+        <div class="highlight-grid">
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#6b2a14,#180a04)"><img src="Flexoes.jpg"></div>
+            <span class="highlight-name">Flexões</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#5a1f1f,#150707)"><img src="Barra Fixa.jpeg"></div>
+            <span class="highlight-name">Barra Fixa</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#7a4a14,#1c0f04)"><img src="Muscle Up.jpg"></div>
+            <span class="highlight-name">Muscle-up</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#4a2a1a,#120a05)"><img src="Prancha.jpeg"></div>
+            <span class="highlight-name">Prancha</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#6a1f3a,#170610)"><img src="Agachamento.jpg"></div>
+            <span class="highlight-name">Agachamento</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#6a1f3a,#170610)"><img src="Abdominal.jpeg"></div>
+            <span class="highlight-name">Abdominais</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Animes -->
+      <div class="hobby-card wide">
+        <div class="hi"><i class="fas fa-torii-gate"></i></div>
+        <h3>Animes</h3>
+        <p>Sou fã de animes — histórias com boa construção de mundo e personagens marcantes são as que mais me prendem.</p>
+        <div class="highlight-grid">
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#9a4a14,#1c0c04)"><img src="Naruto.webp"></div>
+            <span class="highlight-name">Naruto</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#0d3a5e,#04101c)"><img src="One Piece.webp"></div>
+            <span class="highlight-name">One Piece</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#a86a14,#1c1204)"><img src="Dragon Ball 2.jpg"></div>
+            <span class="highlight-name">Dragon Ball</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#3a3a3a,#0c0c0c)"><img src="Attack On Titan.jpg"></div>
+            <span class="highlight-name">Attack on Titan</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#0d5e4a,#041c14)"><img src="Demon Slayer.jpg"></div>
+            <span class="highlight-name">Demon Slayer</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#1f6e3a,#06180c)"><img src="My Hero Academy.jpeg"></div>
+            <span class="highlight-name">My Hero Academia</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Séries & Filmes -->
+      <div class="hobby-card wide">
+        <div class="hi"><i class="fas fa-clapperboard"></i></div>
+        <h3>Séries &amp; Filmes</h3>
+        <p>Prefiro histórias de acção, aventura e ficção científica — algo envolvente sem ser pesado.</p>
+        <div class="tag-row">
+          <span><i class="fas fa-explosion"></i> Acção</span>
+          <span><i class="fas fa-compass"></i> Aventura</span>
+          <span><i class="fas fa-rocket"></i> Ficção Científica</span>
+          <span><i class="fas fa-mask"></i> Super-heróis</span>
+          <span><i class="fas fa-face-laugh"></i> Comédia</span>
+        </div>
+        <p class="exclude-note"><i class="fas fa-circle-xmark"></i> Não curto romance, drama nem suspense.</p>
+      </div>
+
+      <!-- Charadão -->
+      <div class="hobby-card wide">
+        <div class="hi"><i class="fas fa-fire"></i></div>
+        <h3>Charadão</h3>
+        <p>Charadão é uma brincadeira de charadas que eu mesmo criei — mais de 150 charadas em 13 categorias, com sistema de ranking. Sou fã do meu próprio jogo, e adoro testar os amigos com ele.</p>
+        <div class="highlight-grid">
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#7a1f5e,#1c071a)">
+              <span class="mini-badge">TOP</span>
+              <i class="fas fa-torii-gate"></i>
+            </div>
+            <span class="highlight-name">Animes</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#1f3a7a,#070c1c)">
+              <span class="mini-badge">NOVO</span>
+              <i class="fas fa-code"></i>
+            </div>
+            <span class="highlight-name">Programação</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#5e1f7a,#14071c)"><i class="fas fa-music"></i></div>
+            <span class="highlight-name">Música</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#7a1f3a,#1c0712)"><i class="fas fa-clapperboard"></i></div>
+            <span class="highlight-name">Cinema &amp; Séries</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#2a1f7a,#08051c)"><i class="fas fa-meteor"></i></div>
+            <span class="highlight-name">Espaço</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art" style="background:linear-gradient(160deg,#3a1f5e,#0c0714)"><i class="fas fa-brain"></i></div>
+            <span class="highlight-name">Clássicas</span>
+          </div>
+        </div>
+        <a href="projetos.html" class="link-out">Ver o projecto Charadão →</a>
+      </div>
+
+      <!-- Videojogos -->
+      <div class="hobby-card wide">
+        <div class="hi"><i class="fas fa-gamepad"></i></div>
+        <h3>Videojogos</h3>
+        <p>Nos tempos livres, gosto de jogar — é também uma forma de relaxar e apreciar boa narrativa e design de jogo.</p>
+        <div class="highlight-grid">
+          <div class="highlight-item">
+            <div class="highlight-art hl-rdr2"><img src="Red-dead-redemption-2.webp"></div>
+            <span class="highlight-name">Red Dead Redemption 2</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art hl-acbf"><img src="Assassin Scree Black Flack 2.jpg"></div>
+            <span class="highlight-name">Assassin's Creed Black Flag</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art hl-ff"><img src="Free Fire.jpg"></div>
+            <span class="highlight-name">Free Fire</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art hl-gtav"><img src="GTA V.webp"></div>
+            <span class="highlight-name">GTA V</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art hl-fifa"><img src="FIFA.jpg"></div>
+            <span class="highlight-name">FIFA</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-art hl-codm"><img src="Call Of Duty Mobile.webp"></div>
+            <span class="highlight-name">Call of Duty Mobile</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© 2026 Elvis António Salomão Chato — Nacala-Porto, MZ</p>
+    <div class="footer-social">
+      <a href="https://wa.me/258863093729" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="mailto:elvesantonio123@gmail.com">Email</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const mobPanel = document.getElementById('mobPanel');
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  const drawerClose = document.getElementById('drawerClose');
+
+  function openDrawer(){
+    mobPanel.classList.add('open');
+    drawerBackdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer(){
+    mobPanel.classList.remove('open');
+    drawerBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  if(menuBtn){ menuBtn.addEventListener('click', openDrawer); }
+  if(drawerBackdrop){ drawerBackdrop.addEventListener('click', closeDrawer); }
+  if(drawerClose){ drawerClose.addEventListener('click', closeDrawer); }
+</script>
+</body>
+</html>
